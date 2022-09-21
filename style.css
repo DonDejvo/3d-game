@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    touch-action: none;
+    -webkit-user-select: none;
+}
+
+canvas {
+    display: block;
+    image-rendering: pixelated;
+}
