@@ -461,7 +461,7 @@ class Entity {
 
 class Player extends Entity {
 
-    static SPEED = 4;
+    static SPEED = 10;
 
     moving = false;
     dir = [0, 0, -1];
@@ -492,7 +492,7 @@ class Player extends Entity {
                 moveDir[1] = -1;
             }
     
-            vec3.rotateY(this.dir, this.dir, [0, 0, 0], MouseListener.getDeltaX() * delta * -0.12);
+            vec3.rotateY(this.dir, this.dir, [0, 0, 0], MouseListener.getDeltaX() * delta * -0.18);
         } else {
 
 
@@ -525,7 +525,7 @@ class Player extends Entity {
                 } else if(this.fingers[1] == i + 1) {
     
                     if(TouchListener.isTouched(i)) {
-                        vec3.rotateY(this.dir, this.dir, [0, 0, 0], TouchListener.getDeltaX(i) * delta * -0.24);
+                        vec3.rotateY(this.dir, this.dir, [0, 0, 0], TouchListener.getDeltaX(i) * delta * -0.36);
                     } else {
                         this.fingers[1] = 0;
                     }
@@ -560,7 +560,7 @@ class Player extends Entity {
 class Door extends Entity {
 
     static MAX_OFFSET = Level.TILE_SIZE * 0.9;
-    static SPEED = 3;
+    static SPEED = 5;
 
     opened = false;
     basePos = vec3.create();
@@ -617,6 +617,7 @@ class AssetPool {
     static loadImage(name, path) {
         return new Promise(resolve => {
             const image = new Image();
+            image.crossOrigin = "Anonymous";
             image.src = path;
             image.onload = () => {
                 this.imagesMap.set(name, image);
@@ -1574,10 +1575,12 @@ let
     tex_tileset,
     spritesheet_tileset;
 
+const ASSETS_URL = "";
+
 const init = async () => {
     await Promise.all([
-        AssetPool.loadImage("tileset", "assets/images/lab-tileset-1.png"),
-        AssetPool.loadImage("map1", "assets/maps/map-1.gif")
+        AssetPool.loadImage("tileset", ASSETS_URL + "assets/images/lab-tileset-1.png"),
+        AssetPool.loadImage("map1", ASSETS_URL + "assets/maps/map-1.gif")
     ]);
 
     canvas = document.createElement("canvas");
@@ -1585,18 +1588,7 @@ const init = async () => {
         e.stopPropagation();
         e.preventDefault();
     }
-    canvas.onclick = () => {
-        canvas.onclick = () => {
-            canvas.requestPointerLock();
-            canvas.requestFullscreen();
-        }
-        canvas.onclick();
-
-        scene = new Level();
-        scene.init(levelData[0]);
-
-        requestAnimationFrame(loop);
-    }
+    
     gl = canvas.getContext("webgl2");
     document.body.appendChild(canvas);
 
@@ -1618,6 +1610,23 @@ const init = async () => {
     model_door = model_init_door();
 
     renderer.submitBuffer();
+
+    alert("Click to start");
+
+    canvas.onclick = () => {
+        canvas.onclick = () => {
+            canvas.requestPointerLock();
+            canvas.requestFullscreen().catch(err => {
+                console.log(err.message);
+            });
+        }
+        canvas.onclick();
+
+        scene = new Level();
+        scene.init(levelData[0]);
+
+        requestAnimationFrame(loop);
+    }
 }
 
 const resize = () => {
@@ -1629,8 +1638,10 @@ const resize = () => {
 const loop = (timeNow) => {
     timeNow *= 0.001;
     if (!lastTime) lastTime = timeNow;
+    console.log(timeNow - lastTime);
     delta = Math.min(timeNow - lastTime, 0.05);
     totalTime += delta;
+    lastTime = timeNow;
 
     KeyListener.beginFrame();
     MouseListener.beginFrame();
