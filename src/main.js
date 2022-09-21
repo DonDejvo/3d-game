@@ -1638,7 +1638,6 @@ const resize = () => {
 const loop = (timeNow) => {
     timeNow *= 0.001;
     if (!lastTime) lastTime = timeNow;
-    console.log(timeNow - lastTime);
     delta = Math.min(timeNow - lastTime, 0.05);
     totalTime += delta;
     lastTime = timeNow;
