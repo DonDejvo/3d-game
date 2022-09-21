@@ -525,7 +525,7 @@ class Player extends Entity {
                 } else if(this.fingers[1] == i + 1) {
     
                     if(TouchListener.isTouched(i)) {
-                        vec3.rotateY(this.dir, this.dir, [0, 0, 0], TouchListener.getDeltaX(i) * delta * -0.36);
+                        vec3.rotateY(this.dir, this.dir, [0, 0, 0], TouchListener.getDeltaX(i) * delta * -0.72);
                     } else {
                         this.fingers[1] = 0;
                     }
